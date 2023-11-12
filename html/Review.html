@@ -1,0 +1,73 @@
+<!-- review.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RESTAURANT ANALYSIS</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+  </head>
+  <body class="wrapper">
+    <div class="container">
+      <div class="title">
+        <h1>Write a Review</h1>
+      </div>
+      <div id="line"></div>
+      <div class="inputForm">
+        <form action="../php/submit_review.php" method="post">
+          <div id="inputTitle">Review</div>
+          <textarea id="review" name="review" class="input"></textarea>
+          <div id="inputTitle">Photo</div>
+          <div class="custom-file-upload">
+            <div id="fileContainer">
+              <label for="photo" id="fileInputLabel">Choose a photo</label>
+              <input
+                type="file"
+                id="photo"
+                name="photo"
+                class="input"
+                onchange="updateFileInputText()"
+              />
+              <span id="fileName">No file chosen</span>
+            </div>
+          </div>
+          <div id="inputTitle">Rating</div>
+          <input
+            type="number"
+            id="rating"
+            name="rating"
+            min="1"
+            max="5"
+            required
+            class="input"
+          />
+          <input type="submit" value="Submit" class="button" />
+          <input
+            type="button"
+            value="Go back to the previous page"
+            onclick="history.back()"
+            id="backButton"
+          />
+        </form>
+      </div>
+      <div id="line"></div>
+      <div class="title">
+        <h2>Other Reviews</h2>
+      </div>
+      <div id="line"></div>
+      <div id="reviews">
+        <div class="review">
+          <p><strong>Date:</strong> 2023-11-11</p>
+          <p><strong>Rating:</strong> 5</p>
+          <p>
+            <strong>Photo:</strong> <img src="photo.jpg" alt="Review photo" />
+          </p>
+          <p><strong>Review:</strong> This restaurant is amazing!</p>
+        </div>
+        <!-- Copy the above div to display additional reviews -->
+      </div>
+      <div id="line"></div>
+    </div>
+  </body>
+</html>
