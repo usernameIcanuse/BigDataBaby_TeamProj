@@ -8,6 +8,19 @@ insert into Types(Type) values("Chicken");
 insert into Types(Type) values("Dessert");
 insert into Types(Type) values("Etc");
 
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (1, '#데이트');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (2, '#사진');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (3, '#혼밥');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (4, '#넓은');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (5, '#주차');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (6, '#건강한');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (7, '#트렌디한');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (8, '#새로오픈');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (9, '#특이한');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (10, '#이색적인');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (11, '#브런치');
+INSERT INTO hashtag (hashtag_code, hashtag) VALUES (12, '#편안한');
+
 insert into Restaurant values('3230000-101-2023-00343','Daepo Jjimdak', 2);
 insert into Restaurant values('3230000-101-2023-00222','CAFE jongnosijang', 7);
 insert into Restaurant values('3150000-101-2023-00052','n.GRILL', 1);
