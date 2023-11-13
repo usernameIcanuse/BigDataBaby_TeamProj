@@ -6,56 +6,26 @@
 <BODY>
 
     Search Restaurant</br>
-    <form action="Searchdata.php" method="POST">
+    <form action="../php/Searchdata.php" method="POST">
         Restaurant Name : <input type="text" name="NAME" /><br />
         Type <select name="type">
-            <option value="Korean"> Korean
-            <option value="Dessert"> Dessert
-        </select>
-        Location <select name="location">
-            <option value="Seoul"> Seoul
-            <option value="New york"> New york
-        </select>
+    <option value="Korean"> Korean
+    <option value="Japanese"> Japanese
+    <option value="Chinese"> Chinese
+    <option value="LightWestern"> LightWestern
+    <option value="Asian"> Asian
+    <option value="Bunsik"> Bunsik
+    <option value="Chicken"> Chicken
+    <option value="Dessert"> Dessert
+    <option value="Etc"> Etc
+</select>
+       
         <input type="SUBMIT" value="Search" />
      </form>
         <?php
-        include "SearchRestaurant.php";
-
+            include "../php/SearchRestaurant.php";
         ?>
         <button onclick="location.href='Detail.html'">Detail</button>
-
-        <!--Restaurant Name :
-    <input type="text" id="name" /><br />
-    Type <select id="type">
-        <option value="Korean"> Korean
-        <option value="Dessert"> Dessert
-    </select>
-    Location <select id="location">
-        <option value="Seoul"> Seoul
-        <option value="New york"> New york
-    </select>
-    <button id="SearchButton" onclick=" = "get()">Search</button>
-
-    <?php
-    session_start();
-
-    $_SESSION['name'] =
-    "<script>document.write(name);</script>" ;
-    $_SESSION['type'] =
-    "<script>document.write(type);</script>" ;
-    $_SESSION['location'] =
-    "<script>document.write(location);</script>" ;
-
-    ?>
-    <script>
-        let name, type, location;
-        function get() {
-            name = document.getElementById('name');
-            type = document.getElementById('type');
-            location = document.getElementById('location');
-        }
-    </script>-->
-        <iframe src="DrillDown.html" width="100%" height="1000" frameborder="0" scrolling="no"></iframe>
-
+      
 </BODY>
 </HTML>

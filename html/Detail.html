@@ -6,11 +6,9 @@
 <BODY>
     Restaurant Detail<br />
     <?php
-        session_start();
-        echo "Restaurant: ".$_SESSION['NAME']."\n";
+        include "../php/Menu.php";
     ?>
     Select Button<br />
-    <button onclick="location.href='Menu.html'">Menu</button>
     <button onclick="location.href='Reservation.html'">Reservation</button>
     <button onclick="location.href='Review.html'">Review</button>
 </BODY>
