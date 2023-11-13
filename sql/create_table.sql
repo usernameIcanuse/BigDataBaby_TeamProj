@@ -8,6 +8,10 @@ create table Contact(Code Varchar(25) NOT NULL PRIMARY KEY, PhoneNum varchar(15)
 
 create table Menu(Code Varchar(25) NOT NULL, Menu_Name varchar(50), Menu_Prices int, foreign key(Code) references Restaurant(Code));
 
+CREATE TABLE hashtag (
+    hashtag_code INT(2) PRIMARY KEY,
+    hashtag VARCHAR(10));
+
 ALTER TABLE restaurant
 ADD COLUMN hashtag_code INT(2);
 
@@ -17,10 +21,7 @@ SET hashtag_code = FLOOR(1 + RAND() * 12);
 ALTER TABLE restaurant
 ADD FOREIGN KEY (hashtag_code) REFERENCES hashtag(hashtag_code);
 
-CREATE TABLE hashtag (
-    hashtag_code INT(2) PRIMARY KEY,
-    hashtag VARCHAR(10)
-);
+
 
 create table Reservation(Code VARCHAR(50), 
 						ReserveName VARCHAR(20), 
@@ -28,3 +29,7 @@ create table Reservation(Code VARCHAR(50),
                         ReserveTime VARCHAR(7), 
                         PersonCount INT, 
                         FOREIGN KEY(Code) references Restaurant(Code));
+
+create table Available(Code VARCHAR(25) NOT NULL PRIMARY KEY, Start varchar(8), End varchar(8), foreign key(Code) references Restaurant(Code));
+
+create table BreakTime(Code VARCHAR(25) NOT NULL PRIMARY KEY, BreakStart varchar(13), BreakEnd varchar(13), foreign key(Code) references Restaurant(Code));
