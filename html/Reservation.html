@@ -1,9 +1,183 @@
 <HTML>
+
 <HEAD>
-<TITLE>RESTAURANT ANALYSIS</TITLE>
+    <TITLE>RESTAURANT ANALYSIS</TITLE>
 </HEAD>
 
 <BODY>
-Make Reservation
+    <div>Make Reservation</div>
+
+    <!--날짜 입력, 레스토랑 코드와 선택한 날짜 전달-->
+    <div>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
+            <?php
+                /*
+                Detail.html에서
+                <button onclick="redirect(); return false;">Reservation</button>
+
+                <script language="javascript">
+                    function redirect() {
+                        var inputRestaurant = document.getElementById("inputRestaurant").value; // inputRestaurant는 합칠 때 확인 필요
+
+                       location.href = "Reservation.html?inputRestaurant=" + inputRestaurant;
+                    }
+                </script>           
+                */
+                $inputRestaurant = isset($_GET["inputRestaurant"]) ? $_GET["inputRestaurant"] : "";
+                echo "<input type='hidden' name='inputRestaurant' value='".$inputRestaurant."'>";
+            ?>
+
+            Choose Date<br>
+            <input type="date" name="reserveDate" required>
+            <input type="submit" value="Submit Date">
+        </form>
+    </div>
+
+    <div>
+        <form action="Reservation.php" method="POST">
+            <!--레스토랑 코드, 예약 날짜-->
+            <?php
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {   
+                $inputRestaurant = $_POST['inputRestaurant'];   
+                $reserveDate = $_POST['reserveDate'];
+                echo "<input type='hidden' name='inputRestaurant' value='".$inputRestaurant."'>\n
+                        <input type='hidden' name='reserveDate' value='".$reserveDate."'>"; 
+            ?>
+
+            <div>Available Time:
+                <!--선택한 날짜에서 예약가능 시간을 드롭다운으로 표시-->
+                <select name="inputReserveTime" required>
+                    <?php  
+                    $allTimes = array("Brunch", "Lunch", "Dinner"); // 전체 시간
+                    $notAvailableTimes = array(); // 이미 예약된 시간
+                    
+                    // DB connection
+                    $mysqli = mysqli_connect("localhost","team05","team05","team05");
+                    if(mysqli_connect_errno()){
+                        printf("Connect failed: %s\n",mysqli_connect_error()); 
+                        exit();
+                    }
+                    else{
+                        // run query
+                        $sql = "select ReserveTime from Reservation where Code = ? AND ReserveDate = ?";
+                        
+                        if($stmt = mysqli_prepare($mysqli, $sql)){
+                            mysqli_stmt_bind_param($stmt, "ss", $first, $second);
+    
+                            $first = $inputRestaurant;
+                            $second = date("Y-m-d", strtotime($reserveDate));
+    
+                            mysqli_stmt_execute($stmt);
+    
+                            if($res = mysqli_stmt_get_result($stmt)){
+                                while($newArray = mysqli_fetch_array($res)){
+                                    array_push($notAvailableTimes, $newArray['ReserveTime']);   
+                                }
+                            }
+                        }
+                    }
+
+                    $availableTimes = array();
+
+                    foreach($allTimes as $time){
+                        // 이미 데이터가 존재하는 시간을 제외하고 출력
+                        if (!in_array($time, $notAvailableTimes)) {
+                ?>
+                    <option value="<?php echo $time; ?>">
+                        <?php echo $time; ?>
+                    </option>
+                    <?php  
+                    }}
+                ?>
+                </select>
+            </div>
+
+            <!--예약자 이름, 인원 수 입력-->
+            <div>
+                Please enter reservation information.<br>
+
+                Reservation Name: <input type="text" name="reserveName" required>
+                Number of Person: <input type="text" name="people" size="7" required>
+            </div>
+            <div><input type="submit" name="submit" value="Reserve"></div>
+        </form>
+
+        <!--날짜 다시 선택-->
+        <form>
+            <?php
+                echo "<input type='hidden' name='inputRestaurant' value='".$inputRestaurant."'>\n";
+            ?>
+            <button onclick="redirect(); return false;">Change Date</button>
+        </form>
+        <?php  
+            }
+        ?>
+    </div>
+
+    <!--해당 레스토랑의 현재 예약 상황을 표시-->
+    <div>
+        Reservation List of
+        <?php
+            // DB connection
+            $mysqli = mysqli_connect("localhost","team05","team05","team05");
+            if(mysqli_connect_errno()){
+                printf("Connect failed: %s\n",mysqli_connect_error()); 
+                exit();
+            }
+            else{
+                // 레스토랑 이름 출력
+                $sql = "select Name from Restaurant where Code = ?";
+                if($stmt = mysqli_prepare($mysqli, $sql)){
+                    mysqli_stmt_bind_param($stmt, "s", $first);
+                    $first = $inputRestaurant;
+                    mysqli_stmt_execute($stmt);
+
+                    if($res = mysqli_stmt_get_result($stmt)){
+                        while($newArray = mysqli_fetch_array($res)){
+                            echo $newArray['Name']."\n";
+                        }                       
+                    }
+                }
+                
+                // 예약자 명단 출력(ReserveDate로 오름차순 정렬)
+                $sql = "select ReserveName, ReserveDate, ReserveTime, PersonCount from Reservation where Code = ? order by ReserveDate";
+                
+                if($stmt = mysqli_prepare($mysqli, $sql)){
+                    mysqli_stmt_bind_param($stmt, "s", $first);
+
+                    $first = $inputRestaurant;
+
+                    mysqli_stmt_execute($stmt);
+
+                    if($res = mysqli_stmt_get_result($stmt)){
+                        echo "<table border cols=4>\n";
+                        echo "<tr><td>Name</td><td>Date</td><td>Time</td><td>Person</td></tr>\n";
+                        while($newArray = mysqli_fetch_array($res)){
+                            echo "<tr><td>".$newArray['ReserveName']."</td>
+                                <td>".$newArray['ReserveDate']."</td>
+                                <td>".$newArray['ReserveTime']."</td>
+                                <td>".$newArray['PersonCount']."</td></tr>\n";                              
+                        }
+                        echo "</table>";
+                    }
+                }
+            }
+            mysqli_stmt_close($stmt);
+            mysqli_close($mysqli);
+            ?>
+    </div>
+
+    <!--Main 페이지로 돌아가는 버튼-->
+    <div><button onclick="location.href='Main.html'">Go to Main</button></div>
+
+    <!--날짜 다시 선택 시 레스토랑 코드 다시 전달-->
+    <script language="javascript">
+        function redirect() {
+            var inputRestaurant = document.getElementById("inputRestaurant").value;
+
+            location.href = "Reservation.html?inputRestaurant=" + inputRestaurant;
+        }
+    </script>
 </BODY>
+
 </HTML>
