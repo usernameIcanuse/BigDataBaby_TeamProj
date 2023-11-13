@@ -21,3 +21,10 @@ CREATE TABLE hashtag (
     hashtag_code INT(2) PRIMARY KEY,
     hashtag VARCHAR(10)
 );
+
+create table Reservation(Code VARCHAR(50), 
+						ReserveName VARCHAR(20), 
+                        ReserveDate DATE, 
+                        ReserveTime VARCHAR(7), 
+                        PersonCount INT, 
+                        FOREIGN KEY(Code) references Restaurant(Code));
