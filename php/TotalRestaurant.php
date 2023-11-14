@@ -1,6 +1,6 @@
 <?php
 
-$mysqli = mysqli_connect("localhost","team05","team05","team05");
+$mysqli = mysqli_connect("localhost","root","","RESTAURANT");
 
 if(mysqli_connect_errno())
 {
