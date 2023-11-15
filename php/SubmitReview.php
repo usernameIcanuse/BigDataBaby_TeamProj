@@ -13,12 +13,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// POST로 전달된 리뷰, 사진, 별점 정보 가져오기
+// POST로 전달된 리뷰, 별점, 비밀번호 정보 가져오기
 $review = $_POST['review'];
 $rating = $_POST['rating'];
+$password = $_POST['password'];
 
 // 데이터베이스에 리뷰 저장
-$sql = "INSERT INTO review (review, rating) VALUES ('$review', '$rating')";
+$sql = "INSERT INTO review (review, rating, password) VALUES ('$review', '$rating', '$password')";
 
 if ($conn->query($sql) === TRUE) {
     header("Location: ../html/Review.html");
