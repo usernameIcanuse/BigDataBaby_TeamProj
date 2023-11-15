@@ -2,17 +2,12 @@
 <?php
 // 데이터베이스 연결 설정
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "RESTAURANT";
+$username = "team05";
+$password = "team05";
+$dbname = "team05";
 
 // 데이터베이스 연결
 $conn = new mysqli($servername, $username, $password, $dbname);
-
-// Scroll position preservation
-echo '<script>';
-echo 'var scrollPos = window.scrollY || window.scrollTop || document.getElementsByTagName("html")[0].scrollTop;';
-echo '</script>';
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -23,12 +18,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $reviewCode = $_POST['review_code'];
 
         // Retrieve the correct password from the database based on the review code
-        $passwordSql = "SELECT password FROM review WHERE review_code = '$reviewCode'";
+        $passwordSql = "SELECT * FROM review WHERE review_code = '$reviewCode'";
         $passwordResult = $conn->query($passwordSql);
 
         if ($passwordResult->num_rows > 0) {
             $row = $passwordResult->fetch_assoc();
             $correctPassword = $row['password'];
+            $ratingToDelete = $row['rating'];
+            $restaurantCode = $row['Code'];
 
             // Check if the entered password is correct
             if ($enteredPassword !== $correctPassword) {
@@ -38,14 +35,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo '</script>';
             } else {
                 // The password is correct, proceed with deleting the review
-                $deleteSql = "DELETE FROM review WHERE review_code = '$reviewCode'";
-                if ($conn->query($deleteSql) === TRUE) {
+                // Update rating table for the corresponding restaurant
+                $updateSql = "UPDATE rating 
+                SET total_rating = total_rating - 1, 
+                    RATE = ((RATE * total_rating) - $ratingToDelete) / (total_rating - 1)
+                WHERE CODE = '$restaurantCode'";
+                if ($conn->query($updateSql) === TRUE) {
+                    $deleteSql = "DELETE FROM review WHERE review_code = '$reviewCode'";
+                    if ($conn->query($deleteSql) === TRUE) {
+                        echo '<script>';
+                        echo 'alert("Review deleted successfully.");';
+                        echo '</script>';
+                    } else {
+                        echo '<script>';
+                        echo 'alert("Error deleting review: ' . $conn->error . '");';
+                        echo '</script>';
+                    }
+                }
+                else{
                     echo '<script>';
-                    echo 'alert("Review deleted successfully.");';
-                    echo '</script>';
-                } else {
-                    echo '<script>';
-                    echo 'alert("Error deleting review: ' . $conn->error . '");';
+                    echo 'alert("Error updating rating: ' . $conn->error . '");';
                     echo '</script>';
                 }
             }
@@ -54,8 +63,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 session_start();
+$code = $_SESSION['CODE'];
+
 // 데이터베이스에서 리뷰 가져오기
-$sql = "SELECT * FROM review WHERE Code = '".  $_SESSION['CODE'] ."' ORDER BY review_code DESC";
+$sql = "SELECT * FROM review WHERE Code = '".  $code ."' ORDER BY review_code DESC";
 $result = $conn->query($sql);
 
 // 가져온 리뷰를 HTML 형식으로 반환
