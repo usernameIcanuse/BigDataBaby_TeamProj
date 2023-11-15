@@ -1,4 +1,4 @@
-<!-- getReview.php -->
+<!-- GetReview.php -->
 <?php
 // 데이터베이스 연결 설정
 $servername = "localhost";
@@ -53,8 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+session_start();
 // 데이터베이스에서 리뷰 가져오기
-$sql = "SELECT * FROM review WHERE Code = '3180000-101-2016-00033' ORDER BY review_code DESC";
+$sql = "SELECT * FROM review WHERE Code = '".  $_SESSION['CODE'] ."' ORDER BY review_code DESC";
 $result = $conn->query($sql);
 
 // 가져온 리뷰를 HTML 형식으로 반환
@@ -64,7 +65,7 @@ if ($result->num_rows > 0) {
 
     // 동적으로 적용할 스타일을 생성
     echo '<style>';
-    echo '.wrapper { margin: ' . ($reviewCount * 16.0). 'vh 0; }';
+    echo '.wrapper { margin: ' . ($reviewCount * 16.5). 'vh 0; }';
     echo '.container { margin: ' . ($reviewCount * 2) . 'vh 0; }';
     echo '.password-container { display: flex; align-items: center; }';
     echo '.password {
