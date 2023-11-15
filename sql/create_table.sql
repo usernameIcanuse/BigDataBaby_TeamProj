@@ -61,9 +61,3 @@ CREATE TABLE Review (Code VARCHAR(25),
 						password VARCHAR(50),
 						FOREIGN KEY (Code) REFERENCES restaurant(Code));
                         
-CREATE TABLE Rating (
-    Code VARCHAR(25),
-    rate DECIMAL(10, 2),
-    total_num INT
-);
-                        
