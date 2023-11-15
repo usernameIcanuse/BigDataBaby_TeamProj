@@ -1,6 +1,6 @@
 /* CREATE DATABASE */
-CREATE DATABASE RESTAURANT;
-USE RESTAURANT;
+CREATE DATABASE team05;
+USE team05;
 
 /* CREATE TABLE */
 create table Types(Code int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
@@ -61,3 +61,4 @@ CREATE TABLE Review (Code VARCHAR(25),
 						password VARCHAR(50),
 						FOREIGN KEY (Code) REFERENCES restaurant(Code));
                         
+CREATE INDEX idx_Code ON Review (review_code);
