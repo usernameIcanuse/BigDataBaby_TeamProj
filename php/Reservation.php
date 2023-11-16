@@ -30,10 +30,10 @@
         
                 if(mysqli_stmt_execute($stmt)){
                     echo "Your reservation has been confirmed.<br>";
-                    echo "<button onclick=\"location.href='Main.html'\">Go to the main</button>";
+                    echo "<button onclick=\"location.href='../html/Main.html'\">Go to the main</button>";
                 }else{
                     echo "Could not proceed with your reservation. ".mysqli_error($mysqli);
-                    echo "<button onclick=\"location.href='Main.html'\">Go to the main</button>";
+                    echo "<button onclick=\"location.href='../html/Main.html'\">Go to the main</button>";
                 }
             }
 

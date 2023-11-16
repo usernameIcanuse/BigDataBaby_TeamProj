@@ -33,6 +33,9 @@
                 <!--선택한 날짜에서 예약가능 시간을 드롭다운으로 표시-->
                 <select name="inputReserveTime" required>
                     <?php  
+                    session_start();
+                    $inputRestaurant = $_SESSION['CODE'];
+
                     $allTimes = array("Brunch", "Lunch", "Dinner"); // 전체 시간
                     $notAvailableTimes = array(); // 이미 예약된 시간
                     
@@ -98,6 +101,7 @@
     <div>
         Reservation List of
         <?php
+            $inputRestaurant = $_SESSION['CODE'];
             // DB connection
             $mysqli = mysqli_connect("localhost","team05","team05","team05");
             if(mysqli_connect_errno()){
@@ -148,7 +152,7 @@
     </div>
 
     <!--Main 페이지로 돌아가는 버튼-->
-    <div><button onclick="location.href='Main.html'">Go to Main</button></div>
+    <div><button onclick="location.href='../html/Main.html'">Go to Main</button></div>
 
     <!--날짜 다시 선택 시 레스토랑 코드 다시 전달
     <script language="javascript">
