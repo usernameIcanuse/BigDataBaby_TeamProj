@@ -1,7 +1,7 @@
 
 <?php
 
-$conn = mysqli_connect("127.0.0.1", "root", "", "mydb", "3306"); #알아서 수정
+$conn = mysqli_connect("localhost", "team05", "team05", "team05", "3306"); #알아서 수정
 
 // Check connection
 if ($conn->connect_error) {

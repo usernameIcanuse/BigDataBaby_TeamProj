@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $passwordResult->fetch_assoc();
             $correctPassword = $row['password'];
             $ratingToDelete = $row['rating'];
-            $restaurantCode = $row['Code'];
+            $code = $row['Code'];
 
             // Check if the entered password is correct
             if ($enteredPassword !== $correctPassword) {
@@ -35,26 +35,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo '</script>';
             } else {
                 // The password is correct, proceed with deleting the review
-                // Update rating table for the corresponding restaurant
-                $updateSql = "UPDATE rating 
-                SET total_rating = total_rating - 1, 
-                    RATE = ((RATE * total_rating) - $ratingToDelete) / (total_rating - 1)
-                WHERE CODE = '$restaurantCode'";
-                if ($conn->query($updateSql) === TRUE) {
-                    $deleteSql = "DELETE FROM review WHERE review_code = '$reviewCode'";
-                    if ($conn->query($deleteSql) === TRUE) {
+                $deleteSql = "DELETE FROM review WHERE review_code = '$reviewCode'";
+                if ($conn->query($deleteSql) === TRUE) {
+                    // Update rating table for the corresponding restaurant
+                    $updateSql = "UPDATE rating 
+                    SET total_rating = (SELECT COUNT(*) FROM review WHERE Code = '$code'), 
+                        RATE = (SELECT AVG(rating) FROM review WHERE Code = '$code')
+                    WHERE Code = '$code'";
+                    if ($conn->query($updateSql) === TRUE) {
                         echo '<script>';
                         echo 'alert("Review deleted successfully.");';
                         echo '</script>';
                     } else {
                         echo '<script>';
-                        echo 'alert("Error deleting review: ' . $conn->error . '");';
+                        echo 'alert("Error updating review: ' . $conn->error . '");';
                         echo '</script>';
                     }
                 }
                 else{
                     echo '<script>';
-                    echo 'alert("Error updating rating: ' . $conn->error . '");';
+                    echo 'alert("Error deleting rating: ' . $conn->error . '");';
                     echo '</script>';
                 }
             }
@@ -68,6 +68,12 @@ $code = $_SESSION['CODE'];
 // 데이터베이스에서 리뷰 가져오기
 $sql = "SELECT * FROM review WHERE Code = '".  $code ."' ORDER BY review_code DESC";
 $result = $conn->query($sql);
+
+$avg_rate_sql = "SELECT AVG(rating) AS avg_rate FROM review WHERE Code = '$code' GROUP BY Code";
+$avg_result = $conn->query($avg_rate_sql);
+
+$total_num_sql = "SELECT Code, SUM(1) AS total_num FROM review WHERE Code = '$code' GROUP BY Code;";
+$total_result = $conn->query($total_num_sql);
 
 // 가져온 리뷰를 HTML 형식으로 반환
 if ($result->num_rows > 0) {
@@ -100,6 +106,28 @@ if ($result->num_rows > 0) {
         line-height: 25px; /* Adjust line height for vertical centering */
       }';
     echo '</style>';
+
+    if ($avg_result) {
+        // Fetch the average rate
+        $avg_row = $avg_result->fetch_assoc();
+        $avg_rate = $avg_row['avg_rate'];
+    
+        // Display the average rate
+        echo '<h3><strong>⭐ Average Rate : </strong>' . $avg_rate . '</h3>';
+    } else {
+        echo 'Error calculating average rate: ' . $conn->error;
+    }
+
+    if ($total_result) {
+        // Fetch the average rate
+        $total_row = $total_result->fetch_assoc();
+        $total_num = $total_row['total_num'];
+    
+        // Display the average rate
+        echo '<h3><strong>🔢 Total number of reviews : </strong>' . $total_num . '</h3>';
+    } else {
+        echo 'Error calculating total number: ' . $conn->error;
+    }
 
     while ($row = $result->fetch_assoc()) {
         echo '<div class="review">';
