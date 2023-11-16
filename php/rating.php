@@ -1,13 +1,11 @@
 <?php
 
-$conn = mysqli_connect("127.0.0.1", "root", "", "mydb", "3306"); #알아서 수정
+$conn = mysqli_connect("127.0.0.1", "root", "", "RESTAURANT", "3306");
 
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// SQL query to retrieve data with ranking
 $sql = "SELECT restaurant.name, rating.rate, types.type,
                @rank := @rank + 1 AS 순위
         FROM restaurant
@@ -19,26 +17,26 @@ $sql = "SELECT restaurant.name, rating.rate, types.type,
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
-    // Output data in a table
-    echo "<table border='1'>
-            <tr>
-                <th>순위</th>
-                <th>레스토랑 명</th>
-                <th>별점</th>
-                <th>종류</th>
-            </tr>";
+    echo "<div class='tableWrapper'>
+            <div id='tableTitle'>Ranking</div>
+            <table>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Rate</th>
+                    <th>Type</th>
+                </tr>";
 
-    // Output data of each row
     while ($row = $result->fetch_assoc()) {
         echo "<tr>
-                <td>" . $row["순위"] . "</td>
-                <td>" . $row["name"] . "</td>
-                <td>" . $row["rate"] . "</td>
-                <td>" . $row["type"] . "</td>
+                <td class='rank'>" . $row["순위"] . "</td>
+                <td class='restaurant-name'>" . $row["name"] . "</td>
+                <td class='rating'>" . $row["rate"] . "</td>
+                <td class='restaurant-type'>" . $row["type"] . "</td>
               </tr>";
     }
 
-    echo "</table>";
+    echo "</table></div>";
 } else {
     echo "0 results";
 }
