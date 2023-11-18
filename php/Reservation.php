@@ -1,6 +1,4 @@
 <?php
-    session_start();
-
     // DB connection
     $mysqli = mysqli_connect("localhost","team05","team05","team05");
 
@@ -29,11 +27,15 @@
                 $fifth = $_POST['people'];
         
                 if(mysqli_stmt_execute($stmt)){
-                    echo "Your reservation has been confirmed.<br>";
-                    echo "<button onclick=\"location.href='../html/Main.html'\">Go to the main</button>";
+                    echo '<script>';
+                    echo 'alert("Your reservation has been confirmed.");';
+                    echo '</script>';
+                    echo "<script>location.href='../html/Reservation.html';</script>";
                 }else{
-                    echo "Could not proceed with your reservation. ".mysqli_error($mysqli);
-                    echo "<button onclick=\"location.href='../html/Main.html'\">Go to the main</button>";
+                    echo '<script>';
+                    echo 'alert("Could not proceed with your reservation.".mysqli_error($mysqli));';
+                    echo '</script>';
+                    echo "<script>location.href='../html/Reservation.html';</script>";
                 }
             }
 
