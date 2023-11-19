@@ -1,5 +1,7 @@
 <!-- GetReview.php -->
 <?php
+session_start();
+
 // 데이터베이스 연결 설정
 $servername = "localhost";
 $username = "team05";
@@ -62,7 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-session_start();
 $code = $_SESSION['CODE'];
 
 // 데이터베이스에서 리뷰 가져오기
@@ -74,6 +75,24 @@ $avg_result = $conn->query($avg_rate_sql);
 
 $total_num_sql = "SELECT Code, SUM(1) AS total_num FROM review WHERE Code = '$code' GROUP BY Code;";
 $total_result = $conn->query($total_num_sql);
+
+$type_avg_num_sql = "
+SELECT r.TypeCode, t.Type, AVG(r.review_count) AS avg_review_count
+FROM (
+    SELECT restaurant.Code, restaurant.TypeCode, COUNT(Review.review_code) AS review_count
+    FROM restaurant
+    JOIN Review ON restaurant.Code = Review.Code
+    GROUP BY restaurant.Code, restaurant.TypeCode
+) r
+JOIN types t ON r.TypeCode = t.Code
+WHERE r.TypeCode IN (
+    SELECT restaurant.TypeCode
+    FROM restaurant
+    WHERE restaurant.Code = '$code'
+)
+GROUP BY r.TypeCode, t.Type;";
+
+$type_avg_result = $conn->query($type_avg_num_sql);
 
 // 가져온 리뷰를 HTML 형식으로 반환
 if ($result->num_rows > 0) {
@@ -127,6 +146,17 @@ if ($result->num_rows > 0) {
         echo '<h3><strong>🔢 Total number of reviews : </strong>' . $total_num . '</h3>';
     } else {
         echo 'Error calculating total number: ' . $conn->error;
+    }
+
+    if ($type_avg_result) {
+        // Fetch the average rate
+        $type_avg_row = $type_avg_result->fetch_assoc();
+        $avg_review_count = $type_avg_row['avg_review_count'];
+    
+        // Display the average rate
+        echo '<h3><strong>🔍 Average number of reviews per type : </strong>' . $avg_review_count . '</h3>';
+    } else {
+        echo 'Error calculating average number: ' . $conn->error;
     }
 
     while ($row = $result->fetch_assoc()) {
