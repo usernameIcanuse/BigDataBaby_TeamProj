@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTAURANT ANALYSIS</title>
+    <link rel="stylesheet" href="Main.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="title">
+                <h1>Restaurant Analysis</h1>
+                    Total Restaurant   <?php
+                    // Include the PHP file
+                    include "TotalRestaurant.php";
+                    ?>
+                <div id="line"></div>
+            </div>
+
+            <div class="button-container">
+                <!-- Arrange buttons horizontally -->
+                <button class="button" onclick="location.href='Ranking.html'">Ranking</button>
+                <button class="button" onclick="location.href='Delivery.html'">Delivery</button>
+                <button class="button" onclick="location.href='Search.html'">Search</button>
+            </div>
+
+        </div>
+    </div>
+
+ 
+    <script src="your-script.js"></script>
+</body>
+
+</html>

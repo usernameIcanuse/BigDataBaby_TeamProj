@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <HEAD>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../css/reservation.css" />
+        <TITLE>RESTAURANT ANALYSIS</TITLE>
+    </HEAD>
+    
+    <BODY>   
+        <div class="wrapper">
+            <div class="container">
+                <div class="title">
+                    <div class="subtitle"><strong>Making a Restaurant Reservation</strong></div>
+                </div>
+                <div id="line"></div>
+    
+                <!--날짜 입력, 레스토랑 코드와 선택한 날짜 전달-->
+                <div class="inputForm">
+                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST">
+                        <div id="inputTitle">Choose Date</div>
+                        <input type="date" name="reserveDate" required>
+                        <input type="submit" class="button" value="Submit Date">
+                    </form>
+                </div>
+    
+                <div class="inputForm">
+                    <form action="../php/Reservation.php" method="POST">
+                        <!--레스토랑 코드, 예약 날짜-->
+                        <?php
+                        session_start();
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {                               
+                            $inputRestaurant = $_SESSION['CODE'];   
+                            $reserveDate = $_POST['reserveDate'];
+                            echo "<input type='hidden' name='inputRestaurant' value='".$inputRestaurant."'>\n
+                                    <input type='hidden' name='reserveDate' value='".$reserveDate."'>"; 
+                        ?>
+                        <div id="inputTitle">Available Time</div>
+                        <!--선택한 날짜에서 예약가능 시간을 드롭다운으로 표시-->
+                        <select name="inputReserveTime" required>
+                            <?php  
+                            session_start();
+                            $inputRestaurant = $_SESSION['CODE'];
+    
+                            $allTimes = array("Brunch", "Lunch", "Dinner"); // 전체 시간
+                            $notAvailableTimes = array(); // 이미 예약된 시간
+                            
+                            // DB connection
+                            $mysqli = mysqli_connect("localhost","team05","team05","team05");
+                            if(mysqli_connect_errno()){
+                                printf("Connect failed: %s\n",mysqli_connect_error()); 
+                                exit();
+                            }
+                            else{
+                                // run query
+                                $sql = "select ReserveTime from Reservation where Code = ? AND ReserveDate = ?";
+                                
+                                if($stmt = mysqli_prepare($mysqli, $sql)){
+                                    mysqli_stmt_bind_param($stmt, "ss", $first, $second);
+            
+                                    $first = $inputRestaurant;
+                                    $second = date("Y-m-d", strtotime($reserveDate));
+            
+                                    mysqli_stmt_execute($stmt);
+            
+                                    if($res = mysqli_stmt_get_result($stmt)){
+                                        while($newArray = mysqli_fetch_array($res)){
+                                            array_push($notAvailableTimes, $newArray['ReserveTime']);   
+                                        }
+                                    }
+                                }
+                            }
+    
+                            $availableTimes = array();
+    
+                            foreach($allTimes as $time){
+                                // 이미 데이터가 존재하는 시간을 제외하고 출력
+                                if (!in_array($time, $notAvailableTimes)) {
+                            ?>
+                                <option value="<?php echo $time; ?>">
+                                    <?php echo $time; ?>
+                                </option>
+                                <?php  
+                                }}
+                            ?>
+                        </select>
+    
+                        <!--예약자 이름, 인원 수 입력-->
+                            <div id="inputTitle">Reservation Name</div>
+                            <input type="text" name="reserveName" required>
+                            <div class="inputTitle">Number of Person</div>
+                            <input id="number" name="people" size="7" min="1" max="10" required>
+
+                        <div><input type="submit" class="button" name="submit" value="Reserve"></div>
+                    </form>
+    
+                    <?php  
+                        }
+                    ?>
+                </div>
+            
+    
+            <!--해당 레스토랑의 현재 예약 상황을 표시-->
+                <?php
+                    $inputRestaurant = $_SESSION['CODE'];
+                    // DB connection
+                    $mysqli = mysqli_connect("localhost","team05","team05","team05");
+                    if(mysqli_connect_errno()){
+                        printf("Connect failed: %s\n",mysqli_connect_error()); 
+                        exit();
+                    }
+                    else{
+                        // 레스토랑 이름 출력
+                        $sql = "select Name from Restaurant where Code = ?";
+                        if($stmt = mysqli_prepare($mysqli, $sql)){
+                            mysqli_stmt_bind_param($stmt, "s", $first);
+                            $first = $inputRestaurant;
+                            mysqli_stmt_execute($stmt);
+    
+                            if($res = mysqli_stmt_get_result($stmt)){
+                                while($newArray = mysqli_fetch_array($res)){
+                                    echo "<div class='tableWrapper'><div id='tableTitle'>Reservation List of ".$newArray['Name']."</div>\n";
+                                }                       
+                            }
+                        }
+                        
+                        // 예약자 명단 출력(ReserveDate로 오름차순 정렬)
+                        $sql = "select ReserveName, ReserveDate, ReserveTime, PersonCount from Reservation where Code = ? order by ReserveDate";
+                        
+                        if($stmt = mysqli_prepare($mysqli, $sql)){
+                            mysqli_stmt_bind_param($stmt, "s", $first);
+    
+                            $first = $inputRestaurant;
+    
+                            mysqli_stmt_execute($stmt);
+    
+                            if($res = mysqli_stmt_get_result($stmt)){
+                                echo "<table cols=4>\n";
+                                echo "<tr><td>Name</td><td>Date</td><td>Time</td><td>Person</td></tr>\n";
+                                while($newArray = mysqli_fetch_array($res)){
+                                    echo "<tr><td>".$newArray['ReserveName']."</td>
+                                        <td>".$newArray['ReserveDate']."</td>
+                                        <td>".$newArray['ReserveTime']."</td>
+                                        <td>".$newArray['PersonCount']."</td></tr>\n";                              
+                                }
+                                echo "</table></div>";
+                            }
+                        }
+                    }
+                    mysqli_stmt_close($stmt);
+                    mysqli_close($mysqli);
+                    ?>
+
+    
+            <!--Main 페이지로 돌아가는 버튼-->
+                <button id="backButton" class="button" onclick="location.href='../html/Main.html'">Go to Main</button>
+            </div>
+        </div>
+    </BODY>
+    
+    </HTML>

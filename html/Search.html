@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTAURANT ANALYSIS</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Noto Sans";
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0vh 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #ffffff;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 10px;
+
+        }
+            form label {
+                display: flex;
+                
+                align-items: center;
+
+                margin: 5px 0;
+            }
+                form label > span {
+                    min-width: 10px; /* Adjusted width for labels */
+                    margin-right: 10px;
+                }
+            form input,
+            form select {
+                width: 100px;
+                padding: 10px;
+                margin: 5px 0;
+                font-size: 16px;
+                border: 0.8px solid #979797;
+                border-radius: 10px;
+                box-shadow: 0px 1px 8px rgba(156, 156, 156, 0.15);
+            }
+
+                form input[type="submit"] {
+                    background-color: #00462a;
+                    color: white;
+                    cursor: pointer;
+                }
+
+                    form input[type="submit"]:hover {
+                        background-color: #00361a;
+                    }
+
+        button {
+            width: 100px;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #00462a;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #00361a;
+            }
+        /* style.css */
+
+        .result-table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            .result-table th, .result-table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+            }
+
+            .result-table th {
+                background-color: #f2f2f2;
+            }
+
+        /* Add any additional styles as needed */
+
+
+    </style>
+</head>
+
+<body>
+
+    <form action="Searchdata.php" method="POST">
+        <h1 style="text-align: center;">&emsp;&emsp;Search Restaurant&emsp;&emsp;</h1>
+        <label>
+            <span>Restaurant Name:</span>
+            <input type="text" id="restaurantName" name="NAME" required />
+        </label>
+        <label>
+            <span>Type:</span>
+            <select id="restaurantType" name="type">
+                <option value="Korean">Korean</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Chinese">Chinese</option>
+                <option value="LightWestern">LightWestern</option>
+                <option value="Asian">Asian</option>
+                <option value="Bunsik">Bunsik</option>
+                <option value="Chicken">Chicken</option>
+                <option value="Dessert">Dessert</option>
+                <option value="Etc">Etc</option>
+            </select>
+        </label>
+        <input type="submit" value="Search" />
+
+
+        <?php
+        include "SearchRestaurant.php";
+        ?>
+
+        <button onclick="location.href='Detail.html'">Detail</button>
+    </form>
+</body>
+
+</html>
